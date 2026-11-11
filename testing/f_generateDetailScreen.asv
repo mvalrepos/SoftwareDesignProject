@@ -1,0 +1,45 @@
+function [isPickedUp] = f_generateDetailScreen(templateMatrix,spriteNumOfFood)
+%F_GENERATEDETAILSCREEN Summary of this function goes here
+%   Detailed explanation goes here
+
+detail_scene = simpleGameEngine('retro_pack.png',16,16,5,[75,95,75]);
+
+spr_blank = 1;
+spr_Y = 1023;
+spr_N = 1012;
+
+background = templateMatrix;
+startingRowForTitleText = 3;
+startingColForTitleText = 3;
+startingRowForDetailText = 3;
+startingColForDetailText = 8;
+pickupPromptRow = 8;
+pickupPromptCol = 3;
+foodRow = 5;
+foodCol = 4;
+clickCorrect = false;
+
+background = f_addWordToMatrix('Apple', background, length(background), startingRowForTitleText, startingColForTitleText);
+background(foodRow,foodCol) = spriteNumOfFood;
+background = f_addWordToMatrix('Fiber', background, length(background), startingRowForDetailText, startingColForDetailText);
+background = f_addWordToMatrix('Antioxidants', background, length(background), startingRowForDetailText + 1, startingColForDetailText);
+background = f_addWordToMatrix('Vitamins', background, length(background), startingRowForDetailText + 2, startingColForDetailText);
+background = f_addWordToMatrix('Pick Up?  Y  N', background, length(background), pickupPromptRow, pickupPromptCol);
+foreground = spr_blank * ones(size(background));
+
+drawScene(detail_scene, background, foreground);
+while ~clickCorrect
+
+    [rowClicked,colClicked] = getMouseInput(detail_scene);
+
+    if ((background(background == spr_Y) == rowClicked) && (background(background == spr_Y) == colClicked))
+        isPickedUp = true;
+        clickCorrect = true;
+    elseif ((background(background == spr_N) == rowClicked) && (background(background == spr_N) == colClicked))
+        isPickedUp = false;
+        clickCorrect = true;
+    else
+        
+    end
+end
+end

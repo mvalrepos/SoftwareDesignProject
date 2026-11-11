@@ -53,6 +53,16 @@ currentSprite = 1;
 % X = 1022
 % Y = 1023
 % Z = 1024
+% spr_upArrow = 669
+% spr_rightArrow = 670
+% spr_downArrow = 671
+% spr_leftArrow = 672
+% spr_goal1 = 506;
+% spr_goal2 = 478;
+% spr_goal3 = 856;
+% spr_fade1 = 791;
+% spr_fade2 = 856;
+% spr_fade3 = 888;
 
 game_scene = simpleGameEngine('retro_pack.png',16,16,5,[125,125,125]);
 

@@ -43,6 +43,10 @@ spr_W = 1021;
 spr_X = 1022;
 spr_Y = 1023;
 spr_Z = 1024;
+spr_colon = 958;
+spr_period = 959;
+spr_yes = 824;
+spr_no = 827;
 
 % for the entire length of the string
 for i = 1:length(newString)
@@ -102,6 +106,14 @@ for i = 1:length(newString)
             translationArray(1,i) = spr_Z;
         case ' '
             translationArray(1,i) = spr_space;
+        case ':'
+            translationArray(1,i) = spr_colon;
+        case '.'
+            translationArray(1,i) = spr_period;
+        case '{'
+            translationArray(1,i) = spr_yes;
+        case '}'
+            translationArray(1,i) = spr_no;
         otherwise
             translationArray(1,i) = 1;
     end
