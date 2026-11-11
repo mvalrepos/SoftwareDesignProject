@@ -1,0 +1,129 @@
+function [workingMatrix] = f_wordToMatrix(inputString,availableSize)
+%WORDTOARRAY Summary of this function goes here
+
+%   Detailed explanation goes here
+
+% string that we input in all lowercase
+newString = lower(inputString);
+% matrix we make changes to
+workingMatrix = [];
+%indexes for loop
+columnIndex = 1;
+rowIndex = 1;
+% translation of string into array with values matching the sprite identities of whatever letter it is
+translationArray = ones(length(newString));
+% matrix we output
+outputMatrix = [];
+
+% all the sprites we need
+spr_space = 1;
+spr_A = 980;
+spr_B = 981;
+spr_C = 982;
+spr_D = 983;
+spr_E = 984;
+spr_F = 985;
+spr_G = 986;
+spr_H = 987;
+spr_I = 988;
+spr_J = 989;
+spr_K = 990;
+spr_L = 991;
+spr_M = 992;
+spr_N = 1012;
+spr_O = 1013;
+spr_P = 1014;
+spr_Q = 1015;
+spr_R = 1016;
+spr_S = 1017;
+spr_T = 1018;
+spr_U = 1019;
+spr_V = 1020;
+spr_W = 1021;
+spr_X = 1022;
+spr_Y = 1023;
+spr_Z = 1024;
+
+% for the entire length of the string
+for i = 1:length(newString)
+    % change the translation array to an array of numbers corresponding to their sprite value
+    switch newString(i)
+        case 'a'
+            translationArray(1,i) = spr_A;
+        case 'b'
+            translationArray(1,i) = spr_B;
+        case 'c'
+            translationArray(1,i) = spr_C;
+        case 'd'
+            translationArray(1,i) = spr_D;
+        case 'e'
+            translationArray(1,i) = spr_E;
+        case 'f'
+            translationArray(1,i) = spr_F;
+        case 'g'
+            translationArray(1,i) = spr_G;
+        case 'h'
+            translationArray(1,i) = spr_H;
+        case 'i'
+            translationArray(1,i) = spr_I;
+        case 'j'
+            translationArray(1,i) = spr_J;
+        case 'k'
+            translationArray(1,i) = spr_K;
+        case 'l'
+            translationArray(1,i) = spr_L;
+        case 'm'
+            translationArray(1,i) = spr_M;
+        case 'n'
+            translationArray(1,i) = spr_N;
+        case 'o'
+            translationArray(1,i) = spr_O;
+        case 'p'
+            translationArray(1,i) = spr_P;
+        case 'q'
+            translationArray(1,i) = spr_Q;
+        case 'r'
+            translationArray(1,i) = spr_R;
+        case 's'
+            translationArray(1,i) = spr_S;
+        case 't'
+            translationArray(1,i) = spr_T;
+        case 'u'
+            translationArray(1,i) = spr_U;
+        case 'v'
+            translationArray(1,i) = spr_V;
+        case 'w'
+            translationArray(1,i) = spr_W;
+        case 'x'
+            translationArray(1,i) = spr_X;
+        case 'y'
+            translationArray(1,i) = spr_Y;
+        case 'z'
+            translationArray(1,i) = spr_Z;
+        case ' '
+            translationArray(1,i) = spr_space;
+        otherwise
+            translationArray(1,i) = 1;
+    end
+
+    % creates our word matrix based on translation array
+    % if the index of the column is less/equal to the size we have to put it
+    if (columnIndex <= availableSize) 
+        % change working matrix at the selected row and column to be the value of the sprite of the according letter
+        workingMatrix(rowIndex,columnIndex) = translationArray(1,i);
+        % keep going across columns
+        columnIndex = columnIndex + 1;
+        % if the column index is maxxed out, move down a row and reset column index
+        if (columnIndex == availableSize)
+            rowIndex = rowIndex + 1;
+            columnIndex = 1;
+        end
+    end
+
+end
+
+% change all values in working matrix that are 0 to 1s, because there is no sprite 0
+workingMatrix(workingMatrix == 0) = 1;
+outputMatrix = workingMatrix;
+
+end
