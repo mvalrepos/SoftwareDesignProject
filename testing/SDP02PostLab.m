@@ -93,6 +93,7 @@ menuTemplate = [TL_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall 
     LM_Wall spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank RM_Wall;
     BL_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BR_Wall;
     ];
+
 % init the background for scene 1
 background1 = world;
 startingRowForTitleText = 3;
@@ -123,101 +124,94 @@ while game
             key = getKeyboardInput(game_scene);
             old_row = player_row;
             old_col = player_col;
-            switch key
-                case 'w'
-                    player_row = player_row - 1;
-                case 'a'
-                    player_col = player_col - 1;
-                case 's'
-                    player_row = player_row + 1;
-                case 'd'
-                    player_col = player_col + 1;
-                case 'e'
-                    if (player_col == goal_col && player_row == goal_row)
-                        foreground1(:,:) = spr_fade1;
-                        drawScene(game_scene, background1, foreground1);
-                        pause(0.5);
-                        foreground1(:,:) = spr_fade2;
-                        drawScene(game_scene, background1, foreground1);
-                        pause(0.45);
-                        foreground1(:,:) = spr_fade3;
-                        drawScene(game_scene, background1, foreground1);
-                        pause(0.25);
-                        scene1 = true;
-                        pickedUp = f_generateDetailScreen(menuTemplate, spr_Apple);
-                        if pickedUp
-                            disp("yes you picked up the apple")
-                        else
-                            disp("no you did not pick up the apple")
-                        end
-                        % disabled 2nd scene functionality temporarily
-                        %scene2 = true;
+            if (key ~= 'e')
+                [row, col, game] = f_playerMovement(key,player_row,player_col);
+            elseif (player_col == goal_col && player_row == goal_row)
+                    foreground1(:,:) = spr_fade1;
+                    drawScene(game_scene, background1, foreground1);
+                    pause(0.5);
+                    foreground1(:,:) = spr_fade2;
+                    drawScene(game_scene, background1, foreground1);
+                    pause(0.45);
+                    foreground1(:,:) = spr_fade3;
+                    drawScene(game_scene, background1, foreground1);
+                    pause(0.25);
+                    scene1 = true;
+                    [pickedUp, itemPickedUp] = f_generateDetailScreen(menuTemplate, spr_Apple);
+                    foreground1(:,:) = spr_blank;
+                    if pickedUp
+                        disp("yes you picked up the " + itemPickedUp)
+                    else
+                        disp("no you did not pick up the" + itemPickedUp)
                     end
-                case 'escape'
-                    close all
-                    game = false;
-                    return;
-                otherwise
-                    disp("err wrong key")
+                    % disabled 2nd scene functionality temporarily
+                    %scene2 = true;
             end
+            player_row = row;
+            player_col = col;
             foreground1(player_row,player_col) = spr_player;
             if(old_row ~= player_row || old_col ~= player_col)
                 foreground1(old_row,old_col) = spr_blank;
             end
+            if game == false
+                close all
+                return;
+            end
             drawScene(game_scene, background1, foreground1);
         end
     end
-    if scene2
-        new_player_row = player_row;
-        new_player_col = 2;
-        %new_goal_row = goal_row;
-        %new_goal_col = 1;
-
-        background2 = world;
-        foreground2 = spr_blank * ones(size(background1));
-        foreground2(new_player_row,new_player_col) = spr_player;
-        %foreground1(new_goal_row,new_goal_col) = goal_sprite;
-
-        drawScene(game_scene,background2,foreground2)
-        while scene2
-            key = getKeyboardInput(game_scene);
-            old_row = new_player_row;
-            old_col = new_player_col;
-            switch key
-                case 'w'
-                    new_player_row = new_player_row - 1;
-                case 'a'
-                    new_player_col = new_player_col - 1;
-                case 's'
-                    new_player_row = new_player_row + 1;
-                case 'd'
-                    new_player_col = new_player_col + 1;
-                case 'e'
-                    if (new_player_col == goal_col && new_player_row == goal_row)
-                        foreground2(:,:) = spr_A;
-                        drawScene(game_scene, background1, foreground2);
-                        pause(0.5);
-                        foreground2(:,:) = spr_B;
-                        drawScene(game_scene, background1, foreground2);
-                        pause(0.45);
-                        foreground2(:,:) = spr_C;
-                        drawScene(game_scene, background1, foreground2);
-                        pause(0.35);
-                        scene1 = false;
-                        scene2 = true;
-                    end
-                case 'escape'
-                    close all
-                    game = false;
-                    return;
-                otherwise
-                    disp("err wrong key")
-            end
-            foreground2(new_player_row,new_player_col) = spr_player;
-            if(old_row ~= new_player_row || old_col ~= new_player_col)
-                foreground2(old_row,old_col) = spr_blank;
-            end
-            drawScene(game_scene, background2, foreground2);
-        end
-    end
+    
+    % if scene2
+    %     new_player_row = player_row;
+    %     new_player_col = 2;
+    %     %new_goal_row = goal_row;
+    %     %new_goal_col = 1;
+    % 
+    %     background2 = world;
+    %     foreground2 = spr_blank * ones(size(background1));
+    %     foreground2(new_player_row,new_player_col) = spr_player;
+    %     %foreground1(new_goal_row,new_goal_col) = goal_sprite;
+    % 
+    %     drawScene(game_scene,background2,foreground2)
+    %     while scene2
+    %         key = getKeyboardInput(game_scene);
+    %         old_row = new_player_row;
+    %         old_col = new_player_col;
+    %         switch key
+    %             case 'w'
+    %                 new_player_row = new_player_row - 1;
+    %             case 'a'
+    %                 new_player_col = new_player_col - 1;
+    %             case 's'
+    %                 new_player_row = new_player_row + 1;
+    %             case 'd'
+    %                 new_player_col = new_player_col + 1;
+    %             case 'e'
+    %                 if (new_player_col == goal_col && new_player_row == goal_row)
+    %                     foreground2(:,:) = spr_A;
+    %                     drawScene(game_scene, background1, foreground2);
+    %                     pause(0.5);
+    %                     foreground2(:,:) = spr_B;
+    %                     drawScene(game_scene, background1, foreground2);
+    %                     pause(0.45);
+    %                     foreground2(:,:) = spr_C;
+    %                     drawScene(game_scene, background1, foreground2);
+    %                     pause(0.35);
+    %                     scene1 = false;
+    %                     scene2 = true;
+    %                 end
+    %             case 'escape'
+    %                 close all
+    %                 game = false;
+    %                 return;
+    %             otherwise
+    %                 disp("err wrong key")
+    %         end
+    %         foreground2(new_player_row,new_player_col) = spr_player;
+    %         if(old_row ~= new_player_row || old_col ~= new_player_col)
+    %             foreground2(old_row,old_col) = spr_blank;
+    %         end
+    %         drawScene(game_scene, background2, foreground2);
+    %     end
+    % end
 end

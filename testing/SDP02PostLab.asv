@@ -62,14 +62,27 @@ spr_leftArrow = 672;
 spr_goal1 = 506;
 spr_goal2 = 478;
 spr_goal3 = 856;
-
+spr_fade1 = 791;
+spr_fade2 = 856;
+spr_fade3 = 888;
 
 % init game scene
 game_scene = simpleGameEngine('retro_pack.png',16,16,5,[75,95,75]);
-detail_scene = simpleGameEngine('retro_pack.png',16,16,5,[95,115,95]);
 
-% large 10 x 20 (could be larger?) array to fit all the details we want about the food
+% large 10 x 20 (could be larger?) array to fit the main game scene (add "bar" at the bottom to contain all the current fruits and button for manual or smth)
 world = [TL_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall  TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TR_Wall;
+    LM_Wall spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank RM_Wall;
+    LM_Wall spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank RM_Wall;
+    LM_Wall spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank RM_Wall;
+    LM_Wall spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank RM_Wall;
+    LM_Wall spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank RM_Wall;
+    LM_Wall spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank RM_Wall;
+    LM_Wall spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank RM_Wall;
+    LM_Wall spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank RM_Wall;
+    BL_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BR_Wall;
+    ];
+
+menuTemplate = [TL_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall  TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TR_Wall;
     LM_Wall spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank RM_Wall;
     LM_Wall spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank RM_Wall;
     LM_Wall spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank RM_Wall;
@@ -95,7 +108,6 @@ game = true;
 scene1 = true;
 scene2 = false;
 
-
 while game
     if scene1
         player_row = 8;
@@ -103,7 +115,7 @@ while game
         goal_row = 6;
         goal_col = 10;
 
-        background1(goal_row,goal_col) = spr_goal2;
+        background1(goal_row,goal_col) = spr_goal3;
         background1(goal_row,goal_col+1) = spr_Apple;
         foreground1(player_row,player_col) = spr_player;
 
@@ -112,39 +124,40 @@ while game
             key = getKeyboardInput(game_scene);
             old_row = player_row;
             old_col = player_col;
-            switch key
-                case 'w'
-                    player_row = player_row - 1;
-                case 'a'
-                    player_col = player_col - 1;
-                case 's'
-                    player_row = player_row + 1;
-                case 'd'
-                    player_col = player_col + 1;
-                case 'e'
-                    if (player_col == goal_col && player_row == goal_row)
-                        foreground1(:,:) = spr_A;
-                        drawScene(game_scene, background1, foreground1);
-                        pause(0.5);
-                        foreground1(:,:) = spr_B;
-                        drawScene(game_scene, background1, foreground1);
-                        pause(0.45);
-                        foreground1(:,:) = spr_C;
-                        drawScene(game_scene, background1, foreground1);
-                        pause(0.35);
-                        scene1 = false;
-                        scene2 = true;
-                    end
-                case 'escape'
-                    close all
-                    game = false;
-                    return;
-                otherwise
-                    disp("err wrong key")
+
+            if (key ~= 'e')
+                [row, col, game] = f_playerMovement(key,player_row,player_col);
+            elseif
+
             end
+            % switch key
+            %     case 'w'
+            %         player_row = player_row - 1;
+            %     case 'a' 
+            %         player_col = player_col - 1;
+            %     case 's' 
+            %         player_row = player_row + 1;
+            %     case 'd' 
+            %         player_col = player_col + 1;
+            %     case 'e'
+                    
+            %         end
+            %     case 'escape'
+            %         close all
+            %         game = false;
+            %         return;
+            %     otherwise
+            %         disp("err wrong key")
+            % end
+            player_row = row;
+            player_col = col;
             foreground1(player_row,player_col) = spr_player;
             if(old_row ~= player_row || old_col ~= player_col)
                 foreground1(old_row,old_col) = spr_blank;
+            end
+            if game == false
+                close all
+                return;
             end
             drawScene(game_scene, background1, foreground1);
         end
