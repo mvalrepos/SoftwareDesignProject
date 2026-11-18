@@ -1,4 +1,4 @@
-function [isPickedUp, whatItemPickedUp] = f_generateDetailScreen(templateMatrix,spriteNumOfFood)
+function [isPickedUp, whatItemPickedUp, spriteIdPickedUp] = f_generateDetailScreen(templateMatrix,spriteNumOfFood,foodChar)
 %F_GENERATEDETAILSCREEN Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -18,9 +18,10 @@ pickupPromptCol = 5;
 foodRow = 5;
 foodCol = 4;
 clickCorrect = false;
+spriteIdPickedUp = 1;
 
 % correlate this to the item that the user picks up
-whatItemPickedUp = 'Apple';
+whatItemPickedUp = foodChar;
 
 background = f_addWordToMatrix(whatItemPickedUp, background, length(background), startingRowForTitleText, startingColForTitleText);
 background(foodRow,foodCol) = spriteNumOfFood;
@@ -42,6 +43,7 @@ while ~clickCorrect
     if ((yRow == rowClicked) && (yCol == colClicked))
         isPickedUp = true;
         clickCorrect = true;
+        spriteIdPickedUp = spriteNumOfFood;
         close Figure 2;
     elseif ((nRow == rowClicked) && (nCol == colClicked))
         isPickedUp = false;

@@ -107,6 +107,8 @@ foreground1 = spr_blank * ones(size(background1));
 game = true;
 scene1 = true;
 scene2 = false;
+currentInventory = [];
+inventorySpace = 1;
 
 while game
     if scene1
@@ -137,12 +139,15 @@ while game
                     drawScene(game_scene, background1, foreground1);
                     pause(0.25);
                     scene1 = true;
-                    [pickedUp, itemPickedUp] = f_generateDetailScreen(menuTemplate, spr_Apple);
+                    [pickedUp, itemPickedUp, spriteOfPickedUp] = f_generateDetailScreen(menuTemplate, spr_Apple, 'Apple');
                     foreground1(:,:) = spr_blank;
                     if pickedUp
                         disp("yes you picked up the " + itemPickedUp)
+                        currentInventory(1,inventorySpace) = spriteOfPickedUp;
+                        inventorySpace = inventorySpace + 1;
+
                     else
-                        disp("no you did not pick up the" + itemPickedUp)
+                        disp("no you did not pick up the " + itemPickedUp)
                     end
                     % disabled 2nd scene functionality temporarily
                     %scene2 = true;
