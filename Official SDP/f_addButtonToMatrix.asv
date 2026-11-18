@@ -1,0 +1,24 @@
+function [outputBackground,outputForeground] = f_addButtonToMatrix(inputButtonWord,inputBackground,inputForeground,spaceOnMatrix,startingRow,startingCol)
+%F_ADDBUTTONTOMATRIX Summary of this function goes here
+%   Detailed explanation goes here
+    % this function should only be used where the only input is clicking, otherwise the movement can override the 
+    
+    % adds the word inside the button boundaries 
+    outputForeground = f_addWordToMatrix(inputButtonWord, inputForeground,lenght(inputForeground), startingRow, startingCol);
+
+    rowButtonIndex = startingRow;
+    colButtonIndex = startingCol;
+    workingButtonMatrix = inputBackground;
+
+    % function here that adds the button sprites in the same space as the words 
+    for i = 1:length(inputButtonWord)
+        if i == 1
+            meow
+        elseif i == length(inputButtonWord)
+            meow
+        else
+        workingButtonMatrix(rowButtonIndex,colButtonIndex) = workingButtonMatrix(i,colButtonIndex);
+        end
+    end
+
+end

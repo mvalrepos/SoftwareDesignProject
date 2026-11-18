@@ -63,6 +63,9 @@ currentSprite = 1;
 % spr_fade1 = 791;
 % spr_fade2 = 856;
 % spr_fade3 = 888;
+% spr_leftEndButton = 193;
+% spr_rightEndButton = 194;
+% spr_midOfButton = 195;
 
 game_scene = simpleGameEngine('retro_pack.png',16,16,5,[125,125,125]);
 

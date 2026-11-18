@@ -65,9 +65,12 @@ spr_goal3 = 856;
 spr_fade1 = 791;
 spr_fade2 = 856;
 spr_fade3 = 888;
+spr_leftEndButton = 193;
+spr_rightEndButton = 195;
+spr_midButton = 194;
 
 % init game scene
-game_scene = simpleGameEngine('retro_pack.png',16,16,5,[75,95,75]);
+game_scene = simpleGameEngine('updatedretro_pack.png',16,16,5,[75,95,75]);
 
 % large 10 x 20 (could be larger?) array to fit the main game scene (add "bar" at the bottom to contain all the current fruits and button for manual or smth)
 world = [TL_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall  TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TR_Wall;
@@ -82,6 +85,7 @@ world = [TL_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall
     BL_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BM_Wall BR_Wall;
     ];
 
+% different sized matrix but practically the same as world, meant to be used for display menus when pickup/interact
 menuTemplate = [TL_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall  TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TM_Wall TR_Wall;
     LM_Wall spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank RM_Wall;
     LM_Wall spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank spr_blank RM_Wall;
@@ -103,25 +107,65 @@ inventorySpace = 1;
 
 while game
     if titleScene
+        % all title scene stuff initialized
         titleBackground = world;
         titleForeground = spr_blank * ones(size(titleBackground));
 
-        titleBackground = f_addWordToMatrix('Meal  Marathoner', titleBackground, length(titleBackground), 3, 3);
+        startOfTitleTextRow = 3;
+        startOfTitleTextCol = 3;
+        startOfStartButtonRow = 6;
+        startOfStartButtonCol = 3;
+        startOfExitButtonRow = 8;
+        startOfExitButtonCol = 3;
 
+        titleBackground = f_addWordToMatrix('Meal  Marathoner', titleBackground, length(titleBackground), startOfTitleTextRow, startOfTitleTextCol);
+        [titleBackground, titleForeground] = f_addButtonToMatrix('Start',titleBackground,titleForeground,length(titleBackground),startOfStartButtonRow,startOfStartButtonCol);
+        [titleBackground, titleForeground] = f_addButtonToMatrix('Exit',titleBackground,titleForeground,length(titleBackground),startOfExitButtonRow,startOfExitButtonCol);
         drawScene(game_scene, titleBackground, titleForeground);
+        
+        % interact loop for title scene
         while titleScene
             [rowClicked,colClicked] = getMouseInput(game_scene);
-            disp(rowClicked)
-            disp(colClicked)
+
+            % if the place clicked has the same background as one of the buttons
+            if ((titleBackground(rowClicked,colClicked) == spr_rightEndButton) || (titleBackground(rowClicked,colClicked) == spr_midButton) || (titleBackground(rowClicked,colClicked) == spr_leftEndButton))
+                disp("you have clicked a button")
+                % TODO: how to differentiate which button is pressed?
+                % create different sprites of different colored button backgrounds and differentiate based on that
+                % create the same sprites but with different numbers associated with them to differentiate based on that
+                % use some other method (probably more complex) like identifying what's in the foreground
+
+                % simple top to bottom fade
+                for i = (1:height(titleForeground))
+                    titleBackground(i,:) = spr_fade2;
+                    if (i <= height(titleForeground) && ((i-1) ~= 0))
+                        titleForeground(i-1,:) = spr_fade3;
+                    end
+                    drawScene(game_scene, titleBackground, titleForeground);
+                    pause( (0.75) - (sind(4 * i)) );
+                end
+                titleForeground(:,:) = spr_fade3;
+                drawScene(game_scene, titleBackground, titleForeground);
+                pause(0.25)
+
+                % change scenes
+                titleScene = false;
+                scene1 = true;
+            else
+                % nothing should happen if you click anywhere else (easter egg potential?)
+                disp("bruh click one of the buttons not here")
+            end
+
         end
-        
+
     elseif scene1
+        
+        % initialize stuff for scene 1
         player_row = 8;
         player_col = 15;
         goal_row = 6;
         goal_col = 10;
 
-        % init the background for scene 1
         background1 = world;
         startingRowForTitleText = 3;
         startingColForTitleText = 3;
@@ -140,32 +184,35 @@ while game
             key = getKeyboardInput(game_scene);
             old_row = player_row;
             old_col = player_col;
-            if (key ~= 'e')
+            if (key ~= "e")
                 [row, col, game] = f_playerMovement(key,player_row,player_col);
             elseif (player_col == goal_col && player_row == goal_row)
-                    foreground1(:,:) = spr_fade1;
-                    drawScene(game_scene, background1, foreground1);
-                    pause(0.5);
-                    foreground1(:,:) = spr_fade2;
-                    drawScene(game_scene, background1, foreground1);
-                    pause(0.45);
-                    foreground1(:,:) = spr_fade3;
-                    drawScene(game_scene, background1, foreground1);
-                    pause(0.25);
-                    scene1 = true;
-                    [pickedUp, itemPickedUp, spriteOfPickedUp] = f_generateDetailScreen(menuTemplate, spr_Apple, 'Apple');
-                    foreground1(:,:) = spr_blank;
-                    if pickedUp
-                        disp("yes you picked up the " + itemPickedUp)
-                        currentInventory(1,inventorySpace) = spriteOfPickedUp;
-                        inventorySpace = inventorySpace + 1;
-
-                    else
-                        disp("no you did not pick up the " + itemPickedUp)
-                    end
-                    % disabled 2nd scene functionality temporarily
-                    %scene2 = true;
+                foreground1(:,:) = spr_fade1;
+                drawScene(game_scene, background1, foreground1);
+                pause(0.5);
+                foreground1(:,:) = spr_fade2;
+                drawScene(game_scene, background1, foreground1);
+                pause(0.45);
+                foreground1(:,:) = spr_fade3;
+                drawScene(game_scene, background1, foreground1);
+                pause(0.25);
+                scene1 = true;
+                [pickedUp, itemPickedUp, spriteOfPickedUp] = f_generateDetailScreen(menuTemplate, spr_Apple, 'Apple');
+                foreground1(:,:) = spr_blank;
+                if pickedUp
+                    disp("yes you picked up the " + itemPickedUp)
+                    currentInventory(1,inventorySpace) = spriteOfPickedUp;
+                    inventorySpace = inventorySpace + 1;
+                else
+                    disp("no you did not pick up the " + itemPickedUp)
+                end
+                % disabled 2nd scene functionality temporarily
+                %scene2 = true;
+            else % a catch all in case something funky happens for testing purposes
+                disp("dude what")
+                disp(key)
             end
+            % TODO: if the player does not call the f_playerMovement, row and col are not defined so error occurs
             player_row = row;
             player_col = col;
             foreground1(player_row,player_col) = spr_player;
@@ -179,18 +226,18 @@ while game
             drawScene(game_scene, background1, foreground1);
         end
     end
-    
+
     % if scene2
     %     new_player_row = player_row;
     %     new_player_col = 2;
     %     %new_goal_row = goal_row;
     %     %new_goal_col = 1;
-    % 
+    %
     %     background2 = world;
     %     foreground2 = spr_blank * ones(size(background1));
     %     foreground2(new_player_row,new_player_col) = spr_player;
     %     %foreground1(new_goal_row,new_goal_col) = goal_sprite;
-    % 
+    %
     %     drawScene(game_scene,background2,foreground2)
     %     while scene2
     %         key = getKeyboardInput(game_scene);

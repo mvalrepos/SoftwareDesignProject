@@ -41,7 +41,7 @@ switch keyInput
             % disabled 2nd scene functionality temporarily
             %scene2 = true;
         end
-    case 'escape'
+    case 'esc'
         close all
         gameState = false;
         return;
