@@ -129,24 +129,32 @@ while game
 
             % if the place clicked has the same background as one of the buttons
             if ((titleBackground(rowClicked,colClicked) == spr_rightEndButton) || (titleBackground(rowClicked,colClicked) == spr_midButton) || (titleBackground(rowClicked,colClicked) == spr_leftEndButton))
-                disp("you have clicked the a button")
+                disp("you have clicked a button")
                 % TODO: how to differentiate which button is pressed?
                 % create different sprites of different colored button backgrounds and differentiate based on that
                 % create the same sprites but with different numbers associated with them to differentiate based on that
                 % use some other method (probably more complex) like identifying what's in the foreground
 
-                % simple top to bottom fade
-                for i = (1:height(titleForeground))
+                %%% simple top to bottom fade
+                % total fade length in seconds
+                totalTime = 1.0;
+                nRows = height(titleForeground);
+                % early rows slower, later rows faster
+                weights = linspace(1, 0.3, nRows);
+                % delays add up to totalTime
+                delays = totalTime * weights / sum(weights);
+
+                for i = 1:nRows
                     titleBackground(i,:) = spr_fade2;
-                    if (i <= height(titleForeground) && ((i-1) ~= 0))
+                    if i > 1
                         titleForeground(i-1,:) = spr_fade3;
                     end
                     drawScene(game_scene, titleBackground, titleForeground);
-                    pause( (0.75) - (sind(4 * i)) );
+                    pause(delays(i));
                 end
                 titleForeground(:,:) = spr_fade3;
                 drawScene(game_scene, titleBackground, titleForeground);
-                pause(0.25)
+                pause(0.1)
 
                 % change scenes
                 titleScene = false;
@@ -184,7 +192,7 @@ while game
             key = getKeyboardInput(game_scene);
             old_row = player_row;
             old_col = player_col;
-            if (key ~= 'e')
+            if (key ~= "e")
                 [row, col, game] = f_playerMovement(key,player_row,player_col);
             elseif (player_col == goal_col && player_row == goal_row)
                 foreground1(:,:) = spr_fade1;
@@ -208,9 +216,11 @@ while game
                 end
                 % disabled 2nd scene functionality temporarily
                 %scene2 = true;
-            els
-         
+            else % a catch all in case something funky happens for testing purposes
+                disp("dude what")
+                disp(key)
             end
+            % TODO: if the player does not call the f_playerMovement, row and col are not defined so error occurs
             player_row = row;
             player_col = col;
             foreground1(player_row,player_col) = spr_player;

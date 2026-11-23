@@ -135,18 +135,26 @@ while game
                 % create the same sprites but with different numbers associated with them to differentiate based on that
                 % use some other method (probably more complex) like identifying what's in the foreground
 
-                % simple top to bottom fade
-                for i = (1:height(titleForeground))
+                % *** simple top to bottom fade ***
+                % total fade length in seconds
+                totalTime = 1.25;
+                nRows = height(titleForeground);
+                % early rows slower, later rows faster
+                weights = linspace(1, 0.3, nRows);
+                % delays add up to totalTime
+                delays = totalTime * weights / sum(weights);
+
+                for i = 1:nRows
                     titleBackground(i,:) = spr_fade2;
-                    if (i <= height(titleForeground) && ((i-1) ~= 0))
+                    if i > 1
                         titleForeground(i-1,:) = spr_fade3;
                     end
                     drawScene(game_scene, titleBackground, titleForeground);
-                    pause( (0.5) - (sind(4 * i)) );
+                    pause(delays(i));
                 end
                 titleForeground(:,:) = spr_fade3;
                 drawScene(game_scene, titleBackground, titleForeground);
-                pause(0.25)
+                pause(0.1)
 
                 % change scenes
                 titleScene = false;
