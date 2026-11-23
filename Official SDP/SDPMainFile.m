@@ -175,7 +175,7 @@ while game
             old_row = player_row;
             old_col = player_col;
             if (key ~= "e")
-                [row, col, game] = f_playerMovement(key,player_row,player_col);
+                [row, col, game] = f_playerMovement(key,player_row,player_col,background1);
             elseif (player_col == goal_col && player_row == goal_row)
 
                 % screen transition fade
