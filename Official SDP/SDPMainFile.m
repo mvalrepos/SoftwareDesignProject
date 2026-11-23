@@ -142,7 +142,7 @@ while game
                         titleForeground(i-1,:) = spr_fade3;
                     end
                     drawScene(game_scene, titleBackground, titleForeground);
-                    pause( (0.75) - (sind(4 * i)) );
+                    pause( (0.5) - (sind(4 * i)) );
                 end
                 titleForeground(:,:) = spr_fade3;
                 drawScene(game_scene, titleBackground, titleForeground);
