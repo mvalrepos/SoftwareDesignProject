@@ -135,26 +135,8 @@ while game
                 % create the same sprites but with different numbers associated with them to differentiate based on that
                 % use some other method (probably more complex) like identifying what's in the foreground
 
-                % *** simple top to bottom fade ***
-                % total fade length in seconds
-                totalTime = 1.25;
-                nRows = height(titleForeground);
-                % early rows slower, later rows faster
-                weights = linspace(1, 0.3, nRows);
-                % delays add up to totalTime
-                delays = totalTime * weights / sum(weights);
-
-                for i = 1:nRows
-                    titleBackground(i,:) = spr_fade2;
-                    if i > 1
-                        titleForeground(i-1,:) = spr_fade3;
-                    end
-                    drawScene(game_scene, titleBackground, titleForeground);
-                    pause(delays(i));
-                end
-                titleForeground(:,:) = spr_fade3;
-                drawScene(game_scene, titleBackground, titleForeground);
-                pause(0.1)
+                % screen fade transition
+                [titleBackground, titleForeground] = f_fadeOut(game_scene, titleBackground, titleForeground, 1.0);
 
                 % change scenes
                 titleScene = false;
@@ -195,15 +177,10 @@ while game
             if (key ~= "e")
                 [row, col, game] = f_playerMovement(key,player_row,player_col);
             elseif (player_col == goal_col && player_row == goal_row)
-                foreground1(:,:) = spr_fade1;
-                drawScene(game_scene, background1, foreground1);
-                pause(0.5);
-                foreground1(:,:) = spr_fade2;
-                drawScene(game_scene, background1, foreground1);
-                pause(0.45);
-                foreground1(:,:) = spr_fade3;
-                drawScene(game_scene, background1, foreground1);
-                pause(0.25);
+
+                % screen transition fade
+                f_fadeOut(game_scene, background1, foreground1, 1.0);
+
                 scene1 = true;
                 [pickedUp, itemPickedUp, spriteOfPickedUp] = f_generateDetailScreen(menuTemplate, spr_Apple, 'Apple');
                 foreground1(:,:) = spr_blank;
